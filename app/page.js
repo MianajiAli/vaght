@@ -1,8 +1,6 @@
 import Table from "./components/Table";
 export default function Home() {
   return (
-    <Table>
-
-    </Table>
+    <h1>wellcome</h1>
   );
 }
