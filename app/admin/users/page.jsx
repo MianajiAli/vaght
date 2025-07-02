@@ -70,7 +70,7 @@ const Page = () => {
 
     const handleEditSubmit = async () => {
         try {
-            const res = await axiosInstance.put(`/api/users/users/${editingUser.id}/`, editForm);
+            const res = await axiosInstance.put(`/api/users/profile/`, editForm);
             const updatedUser = res.data;
             const updatedUsers = users.map((user) => user.id === updatedUser.id ? updatedUser : user);
             setUsers(updatedUsers);

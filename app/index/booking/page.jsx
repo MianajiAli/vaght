@@ -1,30 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-
-// 📌 توکن جدید می‌گیریم اگر access منقضی شده بود
-async function refreshAccessToken() {
-    const refresh = localStorage.getItem("refreshToken");
-    if (!refresh) return null;
-
-    const res = await fetch("http://localhost:8000/api/token/refresh/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh }),
-    });
-
-    if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem("accessToken", data.access);
-        return data.access;
-    } else {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        return null;
-    }
-}
+import React, { useState, useEffect } from "react";
+import axiosInstance from "@/utils/axiosInstance"; // مسیر را به درستی تنظیم کن
 
 const AddAppointmentPage = () => {
     const [form, setForm] = useState({
@@ -39,8 +16,21 @@ const AddAppointmentPage = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
+    useEffect(() => {
+        const booking = localStorage.getItem("booking");
+        if (booking) {
+            try {
+                const { miladiDate, time } = JSON.parse(booking);
+                setForm((f) => ({ ...f, date: miladiDate || "", time: time || "" }));
+            } catch {
+                // ignore parse error
+            }
+        }
+    }, []);
+
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm((f) => ({ ...f, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
@@ -48,49 +38,24 @@ const AddAppointmentPage = () => {
         setMessage("");
         setLoading(true);
 
-        let token = localStorage.getItem("accessToken");
-
-        const sendRequest = async (jwt) => {
-            return await fetch("http://localhost:8000/api/appointments/appointments/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${jwt}`,
-                },
-                body: JSON.stringify(form),
-            });
-        };
-
         try {
-            let res = await sendRequest(token);
-
-            // اگر توکن منقضی بود، با refresh توکن جدید بگیر
-            if (res.status === 401) {
-                token = await refreshAccessToken();
-                if (token) {
-                    res = await sendRequest(token);
-                } else {
-                    throw new Error("Session expired. Please log in again.");
-                }
-            }
-
-            if (!res.ok) {
-                const errData = await res.json();
-                setMessage("❌ " + JSON.stringify(errData));
-            } else {
-                const data = await res.json();
-                setMessage("✅ Appointment added successfully!");
-                setForm({
-                    patient: "",
-                    doctor: "",
-                    date: "",
-                    time: "",
-                    status: "",
-                    description: "",
-                });
-            }
+            const res = await axiosInstance.post("/api/appointments/appointments/", form);
+            setMessage("✅ Appointment added successfully!");
+            setForm({
+                patient: "",
+                doctor: "",
+                date: "",
+                time: "",
+                status: "",
+                description: "",
+            });
+            localStorage.removeItem("booking");
         } catch (err) {
-            setMessage("❌ " + err.message);
+            if (err.response && err.response.data) {
+                setMessage("❌ " + JSON.stringify(err.response.data));
+            } else {
+                setMessage("❌ " + err.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -105,9 +70,7 @@ const AddAppointmentPage = () => {
                 <h2 className="text-2xl font-semibold text-center">Add Appointment</h2>
 
                 {message && (
-                    <div className="text-center text-sm text-red-500 dark:text-red-400">
-                        {message}
-                    </div>
+                    <div className="text-center text-sm text-red-500 dark:text-red-400">{message}</div>
                 )}
 
                 <input
@@ -134,16 +97,16 @@ const AddAppointmentPage = () => {
                     type="date"
                     name="date"
                     value={form.date}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-black dark:border-white bg-transparent rounded"
+                    readOnly
+                    className="w-full p-2 border border-black dark:border-white bg-gray-100 dark:bg-gray-800 rounded cursor-not-allowed"
                 />
 
                 <input
                     type="time"
                     name="time"
                     value={form.time}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-black dark:border-white bg-transparent rounded"
+                    readOnly
+                    className="w-full p-2 border border-black dark:border-white bg-gray-100 dark:bg-gray-800 rounded cursor-not-allowed"
                 />
 
                 <input
