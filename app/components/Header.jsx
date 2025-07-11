@@ -19,7 +19,7 @@ const Header = ({ }) => {
                     {/* <a href="/login" className="text-gray-700 hover:text-blue-500 px-2 py-1">ورود</a>
                     <a href="/register" className="text-gray-700 hover:text-blue-500 px-2 py-1">ثبت نام</a> */}
                     <a
-                        href="/index/appointment"
+                        href="/dashboard/appointment"
                         className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200"
                     >
                         نوبت دهی اینترنتی
