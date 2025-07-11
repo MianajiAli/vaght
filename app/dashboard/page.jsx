@@ -1,50 +1,73 @@
 "use client";
 
 import React from "react";
+// import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// import { useAuth } from "@/context/AuthContext";
 
-const DashboardPage = () => {
-    const router = useRouter();
+const UserDashboard = () => {
     // const { user, logout } = useAuth();
+    const router = useRouter();
 
-    // Sample stats data
-    const stats = [
-        { title: "نوبت‌های امروز", value: "۱۲", icon: "📅", link: "/appointments" },
-        { title: "بیماران جدید", value: "۵", icon: "👨‍⚕️", link: "/patients" },
-        { title: "درآمد امروز", value: "۸,۵۰۰,۰۰۰ تومان", icon: "💰", link: "/financial" },
-        { title: "کارهای انجام شده", value: "۹", icon: "✅", link: "/treatments" },
+    // Sample data - replace with real data from your API
+    const upcomingAppointments = [
+        {
+            id: 1,
+            date: "1402/05/20",
+            time: "10:30",
+            doctor: "دکتر احمدی",
+            service: "معاینه دندان",
+            status: "تایید شده",
+        },
+        {
+            id: 2,
+            date: "1402/05/25",
+            time: "16:00",
+            doctor: "دکتر محمدی",
+            service: "جرمگیری",
+            status: "در انتظار تایید",
+        },
     ];
 
-    // Quick actions
-    const quickActions = [
-        { title: "ثبت نوبت جدید", icon: "➕", link: "/appointments/new" },
-        { title: "ثبت بیمار جدید", icon: "👤", link: "/patients/new" },
-        { title: "صورتحساب", icon: "🧾", link: "/billing" },
-        { title: "گزارشات", icon: "📊", link: "/reports" },
+    const dentalRecords = [
+        {
+            id: 1,
+            date: "1402/04/15",
+            service: "پر کردن دندان",
+            doctor: "دکتر احمدی",
+            notes: "دندان شماره ۳",
+        },
+        {
+            id: 2,
+            date: "1402/03/20",
+            service: "عصب کشی",
+            doctor: "دکتر رضوی",
+            notes: "دندان شماره ۵",
+        },
     ];
 
-    // Recent appointments
-    const recentAppointments = [
-        { id: 1, patient: "علی محمدی", time: "۱۰:۳۰", doctor: "دکتر احمدی", service: "معاینه اولیه" },
-        { id: 2, patient: "فاطمه زاهدی", time: "۱۱:۱۵", doctor: "دکتر رضوی", service: "جرمگیری" },
-        { id: 3, patient: "محسن کریمی", time: "۱۴:۰۰", doctor: "دکتر محمدی", service: "لمینت" },
-    ];
+    const handleLogout = () => {
+        // logout();
+        router.push("/");
+    };
+
+    // if (!user) {
+    //     return <div className="text-center py-8">لطفا وارد سیستم شوید</div>;
+    // }
 
     return (
         <div className="min-h-screen bg-gray-50" dir="rtl">
             {/* Header */}
             <header className="bg-white shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <h1 className="text-xl font-bold text-gray-800">داشبورد مدیریت کلینیک دندانپزشکی</h1>
+                    <h1 className="text-xl font-bold text-gray-800">داشبورد کاربری</h1>
                     <div className="flex items-center space-x-4 space-x-reverse">
-                        <span className="text-gray-700">user name</span>
+                        <span className="text-gray-700">
+                            {/* {user.name || user.username} */}|
+                            user name
+                        </span>
                         <button
-                            onClick={() => {
-                                logout();
-                                router.push("/login");
-                            }}
+                            onClick={handleLogout}
                             className="text-red-600 hover:text-red-800 text-sm"
                         >
                             خروج از سیستم
@@ -55,104 +78,193 @@ const DashboardPage = () => {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 py-6">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    {stats.map((stat, index) => (
+                {/* Welcome Card */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="text-lg font-semibold text-blue-800">
+                                {/* سلام، {user.name || user.username}! */}
+                                user name
+                            </h2>
+                            <p className="text-blue-600 mt-1">
+                                به پنل کاربری کلینیک دندانپزشکی خوش آمدید
+                            </p>
+                        </div>
                         <Link
-                            key={index}
-                            href={stat.link}
-                            className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                            href="/appointments/new"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
                         >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-500 text-sm">{stat.title}</p>
-                                    <p className="text-2xl font-bold mt-1">{stat.value}</p>
-                                </div>
-                                <span className="text-3xl">{stat.icon}</span>
-                            </div>
+                            رزرو نوبت جدید
                         </Link>
-                    ))}
-                </div>
-
-                {/* Quick Actions */}
-                <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">عملیات سریع</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {quickActions.map((action, index) => (
-                            <Link
-                                key={index}
-                                href={action.link}
-                                className="border border-gray-200 rounded-lg p-4 text-center hover:bg-blue-50 hover:border-blue-200 transition-colors"
-                            >
-                                <span className="text-2xl block mb-2">{action.icon}</span>
-                                <span className="text-sm text-gray-700">{action.title}</span>
-                            </Link>
-                        ))}
                     </div>
                 </div>
 
-                {/* Recent Appointments */}
-                <div className="bg-white p-6 rounded-lg shadow-sm">
+                {/* Upcoming Appointments */}
+                <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold text-gray-800">نوبت‌های اخیر</h2>
-                        <Link href="/appointments" className="text-blue-600 text-sm hover:text-blue-800">
+                        <h2 className="text-lg font-semibold text-gray-800">
+                            نوبت‌های آینده
+                        </h2>
+                        <Link
+                            href="/appointments"
+                            className="text-blue-600 text-sm hover:text-blue-800"
+                        >
                             مشاهده همه
                         </Link>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        بیمار
-                                    </th>
-                                    <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        زمان
-                                    </th>
-                                    <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        پزشک
-                                    </th>
-                                    <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        خدمت
-                                    </th>
-                                    <th scope="col" className="relative px-4 py-3">
-                                        <span className="sr-only">جزییات</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {recentAppointments.map((appointment) => (
-                                    <tr key={appointment.id}>
-                                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {appointment.patient}
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {appointment.time}
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {appointment.doctor}
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {appointment.service}
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <Link
-                                                href={`/appointments/${appointment.id}`}
-                                                className="text-blue-600 hover:text-blue-900"
-                                            >
-                                                جزییات
-                                            </Link>
-                                        </td>
+                    {upcomingAppointments.length > 0 ? (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            تاریخ
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            زمان
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            پزشک
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            خدمت
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            وضعیت
+                                        </th>
+                                        <th className="relative px-4 py-3">
+                                            <span className="sr-only">عملیات</span>
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {upcomingAppointments.map((appointment) => (
+                                        <tr key={appointment.id}>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {appointment.date}
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {appointment.time}
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {appointment.doctor}
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {appointment.service}
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs ${appointment.status === "تایید شده"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : "bg-yellow-100 text-yellow-800"
+                                                        }`}
+                                                >
+                                                    {appointment.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <Link
+                                                    href={`/appointments/${appointment.id}`}
+                                                    className="text-blue-600 hover:text-blue-900 ml-2"
+                                                >
+                                                    جزییات
+                                                </Link>
+                                                <button className="text-red-600 hover:text-red-900">
+                                                    لغو
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-gray-500">
+                            نوبت آینده‌ای ندارید
+                        </div>
+                    )}
+                </div>
+
+                {/* Dental Records */}
+                <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                        سوابق دندانپزشکی
+                    </h2>
+
+                    {dentalRecords.length > 0 ? (
+                        <div className="space-y-4">
+                            {dentalRecords.map((record) => (
+                                <div
+                                    key={record.id}
+                                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                                >
+                                    <div className="flex justify-between">
+                                        <div>
+                                            <h3 className="font-medium text-gray-800">
+                                                {record.service}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 mt-1">
+                                                {record.date} - {record.doctor}
+                                            </p>
+                                            {record.notes && (
+                                                <p className="text-sm text-gray-500 mt-2">
+                                                    توضیحات: {record.notes}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <button className="text-blue-600 hover:text-blue-800 text-sm">
+                                            دریافت گزارش
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-gray-500">
+                            سابقه دندانپزشکی ثبت نشده است
+                        </div>
+                    )}
+                </div>
+
+                {/* Quick Actions */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Link
+                        href="/profile"
+                        className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+                    >
+                        <div className="text-blue-600 text-2xl mb-2">👤</div>
+                        <h3 className="font-medium text-gray-800">مشاهده پروفایل</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                            اطلاعات شخصی و پزشکی
+                        </p>
+                    </Link>
+
+                    <Link
+                        href="/payments"
+                        className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+                    >
+                        <div className="text-green-600 text-2xl mb-2">💳</div>
+                        <h3 className="font-medium text-gray-800">پرداخت‌ها</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                            صورت حساب‌ها و پرداخت‌ها
+                        </p>
+                    </Link>
+
+                    <Link
+                        href="/contact"
+                        className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+                    >
+                        <div className="text-purple-600 text-2xl mb-2">📞</div>
+                        <h3 className="font-medium text-gray-800">تماس با کلینیک</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                            اطلاعات تماس و پشتیبانی
+                        </p>
+                    </Link>
                 </div>
             </main>
         </div>
     );
 };
 
-export default DashboardPage;
+export default UserDashboard;
