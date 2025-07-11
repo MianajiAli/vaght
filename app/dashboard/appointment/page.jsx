@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import jalaali from "jalaali-js";
@@ -57,10 +56,9 @@ const AppointmentBookingPage = () => {
         "name": "دکتر مریم محمدی",
         "services": ["serv_001", "serv_003"],
         "specialty": "متخصص زیبایی دندان",
-        "bio": "Optional biography text", // Make this optional
-
-
-        "workHours": [  // Now an array of time ranges
+        "bio": "Optional biography text",
+        "image": "/images/doctors/dr-mohammadi.jpg",
+        "workHours": [
             {
                 "day": "saturday",
                 "start": 9.5,
@@ -86,7 +84,6 @@ const AppointmentBookingPage = () => {
         const fetchInitialData = async () => {
             try {
                 const [appointmentsRes] = await Promise.all([
-
                     axiosInstance.get("/api/appointments/appointments/")
                 ]);
 
@@ -107,6 +104,11 @@ const AppointmentBookingPage = () => {
         return `${jy}/${jm.toString().padStart(2, "0")}/${jd.toString().padStart(2, "0")}`;
     };
 
+    // Format date to YYYY-MM-DD for API
+    const formatDateForAPI = (date) => {
+        return date.toISOString().split('T')[0];
+    };
+
     // Generate available dates (next 14 days)
     useEffect(() => {
         if (selectedDoctor) {
@@ -121,7 +123,8 @@ const AppointmentBookingPage = () => {
                 if (date.getDay() !== 5) {
                     dates.push({
                         miladi: date,
-                        jalali: toJalaliString(date)
+                        jalali: toJalaliString(date),
+                        apiFormat: formatDateForAPI(date)
                     });
                 }
             }
@@ -154,7 +157,7 @@ const AppointmentBookingPage = () => {
                 // Check if slot is available
                 const isBooked = bookedAppointments.some(app => {
                     const appDate = new Date(app.date).toISOString().split('T')[0];
-                    const currentDate = selectedDate.miladi.toISOString().split('T')[0];
+                    const currentDate = selectedDate.apiFormat;
                     return appDate === currentDate && app.time.startsWith(timeStr);
                 });
 
@@ -176,20 +179,26 @@ const AppointmentBookingPage = () => {
 
         try {
             const appointmentData = {
-                serviceId: selectedService.id,
-                doctorId: selectedDoctor.id,
-                date: selectedDate.miladi,
+                title: `${selectedService.name} - ${selectedDoctor.name}`,
+                patient_name: patientInfo.name,
+                doctor_name: selectedDoctor.name,
+                date: selectedDate.apiFormat, // Use the properly formatted date
                 time: selectedTime,
-                patientInfo,
-                jalaliDate: selectedDate.jalali
+                status: "pending",
+                description: `Service: ${selectedService.name}`,
+                patient: 1, // This should be replaced with actual patient ID from your system
+                doctor: parseInt(selectedDoctor.id.replace('doc_', '')), // Convert doctor ID to number
+                patient_phone: patientInfo.phone,
+                patient_email: patientInfo.email
             };
 
-            await axiosInstance.post("/api/appointments", appointmentData);
+            await axiosInstance.post("/api/appointments/appointments/", appointmentData);
 
             // Redirect to confirmation page
             window.location.href = `/booking/confirmation?ref=${Math.random().toString(36).substring(7)}`;
         } catch (err) {
             setError("خطا در ثبت نوبت. لطفا مجددا تلاش کنید.");
+            console.error("Appointment submission error:", err.response?.data);
             setLoading(false);
         }
     };
@@ -237,6 +246,10 @@ const AppointmentBookingPage = () => {
                         onBack={() => setStep(3)}
                         onSubmit={handleSubmit}
                         loading={loading}
+                        selectedService={selectedService}
+                        selectedDoctor={selectedDoctor}
+                        selectedDate={selectedDate}
+                        selectedTime={selectedTime}
                     />
                 );
             default:
@@ -340,7 +353,7 @@ const DoctorSelection = ({ doctors, selectedDoctor, onSelect, onBack, onNext }) 
                             <p className="text-sm text-gray-600">{doctor.specialty}</p>
                         </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-3">{doctor.bio.substring(0, 80)}...</p>
+                    <p className="text-sm text-gray-600 mt-3">{doctor.bio?.substring(0, 80)}...</p>
                 </div>
             ))}
         </div>
@@ -420,7 +433,17 @@ const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectD
     </div>
 );
 
-const PatientInfoForm = ({ data, onChange, onBack, onSubmit, loading }) => {
+const PatientInfoForm = ({
+    data,
+    onChange,
+    onBack,
+    onSubmit,
+    loading,
+    selectedService,
+    selectedDoctor,
+    selectedDate,
+    selectedTime
+}) => {
     const handleChange = (e) => {
         onChange({
             ...data,
@@ -483,15 +506,17 @@ const PatientInfoForm = ({ data, onChange, onBack, onSubmit, loading }) => {
                         <div className="bg-gray-50 p-4 rounded-lg">
                             <div className="flex justify-between py-2 border-b border-gray-200">
                                 <span className="text-gray-600">خدمت:</span>
-                                <span className="font-medium">لمینت دندان</span>
+                                <span className="font-medium">{selectedService?.name}</span>
                             </div>
                             <div className="flex justify-between py-2 border-b border-gray-200">
                                 <span className="text-gray-600">پزشک:</span>
-                                <span className="font-medium">دکتر محمدی</span>
+                                <span className="font-medium">{selectedDoctor?.name}</span>
                             </div>
                             <div className="flex justify-between py-2">
                                 <span className="text-gray-600">زمان:</span>
-                                <span className="font-medium">1402/05/15 - 16:30</span>
+                                <span className="font-medium">
+                                    {selectedDate?.jalali} - {selectedTime}
+                                </span>
                             </div>
                         </div>
                     </div>
