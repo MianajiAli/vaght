@@ -44,7 +44,7 @@ const RegisterPage = () => {
 
         try {
             await axiosInstance.post("/api/users/register/", form);
-            router.push("/login?registered=true");
+            router.push("/auth/login?registered=true");
         } catch (err) {
             if (err.response?.data) {
                 const errors = Object.values(err.response.data).flat();
@@ -213,7 +213,7 @@ const RegisterPage = () => {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             قبلا ثبت نام کرده‌اید؟ {' '}
-                            <Link href="/login" className="text-blue-600 hover:text-blue-500">
+                            <Link href="/auth/login" className="text-blue-600 hover:text-blue-500">
                                 وارد شوید
                             </Link>
                         </p>
