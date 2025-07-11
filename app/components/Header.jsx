@@ -12,7 +12,7 @@ const Header = ({ }) => {
                     <a href="/services" className="hover:text-blue-500 px-2 py-1">خدمات</a>
                     <a href="/dentists" className="hover:text-blue-500 px-2 py-1">دندانپزشکان</a>
                     <a href="/about" className="hover:text-blue-500 px-2 py-1">درباره ما</a>
-                    <a href="/contact" className="hover:text-blue-500 px-2 py-1">تماس با ما</a>
+                    <a href="/dashboard/" className="hover:text-blue-500 px-2 py-1">داشبورد</a>
                 </nav>
 
                 <div className="hidden md:flex items-center gap-2">
