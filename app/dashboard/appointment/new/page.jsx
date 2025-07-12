@@ -234,7 +234,7 @@ const AppointmentBookingPage = () => {
             };
 
             await axiosInstance.post("/api/appointments/appointments/", appointmentData);
-            window.location.href = `/booking/confirmation?ref=${Math.random().toString(36).substring(7)}`;
+            window.location.href = `/dashboard`;
         } catch (err) {
             setError("خطا در ثبت نوبت. لطفا مجددا تلاش کنید.");
             console.error("Appointment submission error:", err.response?.data);

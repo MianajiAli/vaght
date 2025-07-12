@@ -30,7 +30,7 @@ const LoginPage = () => {
 
             localStorage.setItem("accessToken", access);
             localStorage.setItem("refreshToken", refresh);
-            router.push("/");
+            router.push("/dashboard");
         } catch (err) {
             setError(err.response?.data?.detail || "نام کاربری یا رمز عبور اشتباه است");
         } finally {
