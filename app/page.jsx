@@ -20,13 +20,13 @@ export default function Home() {
               </p>
               <div className="flex space-x-4 space-x-reverse">
                 <a
-                  href="/appointment"
+                  href="/dashboard/appointment/new"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors"
                 >
                   رزرو نوبت اینترنتی
                 </a>
                 <a
-                  href="/services"
+                  href="/home/services"
                   className="border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg text-lg font-medium transition-colors"
                 >
                   خدمات ما
@@ -153,7 +153,7 @@ export default function Home() {
               همین امروز نوبت خود را رزرو کنید و از مشاوره رایگان ما بهره‌مند شوید
             </p>
             <a
-              href="/appointment"
+              href="/dashboard/appointment/new"
               className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-medium transition-colors inline-block"
             >
               رزرو نوبت اینترنتی

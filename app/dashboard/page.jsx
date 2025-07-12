@@ -109,7 +109,7 @@ const UserDashboard = () => {
                             )}
                         </div>
                         <Link
-                            href="/appointments/new"
+                            href="/dashboard/appointment/new"
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
                         >
                             رزرو نوبت جدید
@@ -124,7 +124,7 @@ const UserDashboard = () => {
                             نوبت‌های آینده
                         </h2>
                         <Link
-                            href="/dashboard/appointments"
+                            href="/dashboard/appointment/all"
                             className="text-blue-600 text-sm hover:text-blue-800"
                         >
                             مشاهده همه

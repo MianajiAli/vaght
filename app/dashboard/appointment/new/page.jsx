@@ -23,9 +23,9 @@ const AppointmentBookingPage = () => {
             "name": "لمینت سرامیکی دندان",
             "description": "روکش سرامیکی دندان برای زیبایی و اصلاح طرح لبخند",
             "category": "زیبایی",
-            "duration": 60, // in minutes
-            "price": 5000000, // in Rials
-            "doctors": ["doc_001", "doc_003"], // IDs of doctors who provide this service
+            "duration": 60,
+            "price": 5000000,
+            "doctors": ["doc_001", "doc_003"],
             "image": "/images/services/laminate.jpg",
             "popular": true
         },
@@ -66,6 +66,16 @@ const AppointmentBookingPage = () => {
             },
             {
                 "day": "sunday",
+                "start": 16,
+                "end": 20
+            },
+            {
+                "day": "monday",
+                "start": 9.5,
+                "end": 20
+            },
+            {
+                "day": "thursday",
                 "start": 16,
                 "end": 20
             }
@@ -109,6 +119,32 @@ const AppointmentBookingPage = () => {
         return date.toISOString().split('T')[0];
     };
 
+    // Check if a date is fully booked
+    const checkIfDateFullyBooked = (date, doctor) => {
+        const dateStr = formatDateForAPI(date);
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const dayName = dayNames[date.getDay()];
+
+        // Get doctor's work hours for this day
+        const workHours = doctor.workHours.find(wh => wh.day === dayName);
+        if (!workHours) return true; // Doctor doesn't work this day
+
+        // Get all appointments for this doctor on this date
+        const dateAppointments = bookedAppointments.filter(app => {
+            const appDate = new Date(app.date).toISOString().split('T')[0];
+            const doctorId = parseInt(doctor.id.replace('doc_', ''));
+            return app.doctor === doctorId && appDate === dateStr;
+        });
+
+        // Calculate total available slots
+        const duration = selectedService?.duration || 30;
+        const startTotalMinutes = workHours.start * 60;
+        const endTotalMinutes = workHours.end * 60;
+        const totalSlots = Math.floor((endTotalMinutes - startTotalMinutes) / duration);
+
+        return dateAppointments.length >= totalSlots;
+    };
+
     // Generate available dates (next 14 days)
     useEffect(() => {
         if (selectedDoctor) {
@@ -119,55 +155,60 @@ const AppointmentBookingPage = () => {
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
 
-                // Skip Fridays (or other non-working days)
+                // Skip Fridays
                 if (date.getDay() !== 5) {
+                    const isFullyBooked = checkIfDateFullyBooked(date, selectedDoctor);
                     dates.push({
                         miladi: date,
                         jalali: toJalaliString(date),
-                        apiFormat: formatDateForAPI(date)
+                        apiFormat: formatDateForAPI(date),
+                        available: !isFullyBooked
                     });
                 }
             }
 
             setAvailableDates(dates);
         }
-    }, [selectedDoctor]);
+    }, [selectedDoctor, bookedAppointments, selectedService]);
 
     // Generate available time slots
     const generateTimeSlots = () => {
         if (!selectedDate) return [];
 
-        const workHours = selectedDoctor?.workHours || [
-            { start: 9.5, end: 13 },  // 9:30 AM - 1:00 PM
-            { start: 16, end: 20 }     // 4:00 PM - 8:00 PM
-        ];
-
-        const duration = selectedService?.duration || 30; // minutes
+        const workHours = selectedDoctor?.workHours || [];
+        const duration = selectedService?.duration || 30;
         const slots = [];
 
-        workHours.forEach(range => {
-            let startTotalMinutes = range.start * 60;
-            const endTotalMinutes = range.end * 60;
+        // Get day name (e.g., "saturday")
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const dayName = dayNames[selectedDate.miladi.getDay()];
 
-            while (startTotalMinutes + duration <= endTotalMinutes) {
-                const startHour = Math.floor(startTotalMinutes / 60);
-                const startMinute = startTotalMinutes % 60;
-                const timeStr = `${startHour.toString().padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}`;
+        // Find work hours for this day
+        const dayWorkHours = workHours.find(wh => wh.day === dayName);
+        if (!dayWorkHours) return [];
 
-                // Check if slot is available
-                const isBooked = bookedAppointments.some(app => {
-                    const appDate = new Date(app.date).toISOString().split('T')[0];
-                    const currentDate = selectedDate.apiFormat;
-                    return appDate === currentDate && app.time.startsWith(timeStr);
-                });
+        let startTotalMinutes = dayWorkHours.start * 60;
+        const endTotalMinutes = dayWorkHours.end * 60;
 
-                if (!isBooked) {
-                    slots.push(timeStr);
-                }
+        while (startTotalMinutes + duration <= endTotalMinutes) {
+            const startHour = Math.floor(startTotalMinutes / 60);
+            const startMinute = startTotalMinutes % 60;
+            const timeStr = `${startHour.toString().padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}`;
 
-                startTotalMinutes += duration;
+            // Check if slot is available
+            const isBooked = bookedAppointments.some(app => {
+                const appDate = new Date(app.date).toISOString().split('T')[0];
+                return appDate === selectedDate.apiFormat &&
+                    app.time.startsWith(timeStr) &&
+                    app.doctor === parseInt(selectedDoctor.id.replace('doc_', ''));
+            });
+
+            if (!isBooked) {
+                slots.push(timeStr);
             }
-        });
+
+            startTotalMinutes += duration;
+        }
 
         return slots;
     };
@@ -182,19 +223,17 @@ const AppointmentBookingPage = () => {
                 title: `${selectedService.name} - ${selectedDoctor.name}`,
                 patient_name: patientInfo.name,
                 doctor_name: selectedDoctor.name,
-                date: selectedDate.apiFormat, // Use the properly formatted date
+                date: selectedDate.apiFormat,
                 time: selectedTime,
                 status: "pending",
                 description: `Service: ${selectedService.name}`,
-                patient: 1, // This should be replaced with actual patient ID from your system
-                doctor: parseInt(selectedDoctor.id.replace('doc_', '')), // Convert doctor ID to number
+                patient: 1,
+                doctor: parseInt(selectedDoctor.id.replace('doc_', '')),
                 patient_phone: patientInfo.phone,
                 patient_email: patientInfo.email
             };
 
             await axiosInstance.post("/api/appointments/appointments/", appointmentData);
-
-            // Redirect to confirmation page
             window.location.href = `/booking/confirmation?ref=${Math.random().toString(36).substring(7)}`;
         } catch (err) {
             setError("خطا در ثبت نوبت. لطفا مجددا تلاش کنید.");
@@ -385,16 +424,26 @@ const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectD
                 {dates.map(date => (
                     <button
                         key={date.jalali}
-                        onClick={() => onSelectDate(date)}
-                        className={`py-2 rounded-lg border ${selectedDate?.jalali === date.jalali ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 hover:border-blue-300'}`}
+                        onClick={() => date.available && onSelectDate(date)}
+                        className={`py-2 rounded-lg border ${!date.available ?
+                            'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed' :
+                            selectedDate?.jalali === date.jalali ?
+                                'border-blue-500 bg-blue-50 text-blue-600' :
+                                'border-gray-200 hover:border-blue-300'
+                            }`}
+                        disabled={!date.available}
+                        title={!date.available ? "این تاریخ کاملا پر است" : ""}
                     >
                         {date.jalali}
+                        {!date.available && (
+                            <span className="block text-xs text-red-500 mt-1">پر</span>
+                        )}
                     </button>
                 ))}
             </div>
         </div>
 
-        {selectedDate && (
+        {selectedDate && selectedDate.available && (
             <div className="mb-8">
                 <h3 className="font-medium text-gray-700 mb-3">ساعت:</h3>
                 {times.length > 0 ? (
@@ -424,8 +473,8 @@ const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectD
             </button>
             <button
                 onClick={onNext}
-                disabled={!selectedDate || !selectedTime}
-                className={`px-6 py-2 rounded-lg ${selectedDate && selectedTime ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                disabled={!selectedDate || !selectedTime || !selectedDate.available}
+                className={`px-6 py-2 rounded-lg ${selectedDate && selectedTime && selectedDate.available ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
                 مرحله بعد
             </button>

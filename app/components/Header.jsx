@@ -9,9 +9,9 @@ const Header = ({ }) => {
 
                 <nav className="hidden md:flex items-center gap-3 text-gray-700 font-medium">
                     <a href="/" className="hover:text-blue-500 px-2 py-1">خانه</a>
-                    <a href="/services" className="hover:text-blue-500 px-2 py-1">خدمات</a>
-                    <a href="/dentists" className="hover:text-blue-500 px-2 py-1">دندانپزشکان</a>
-                    <a href="/about" className="hover:text-blue-500 px-2 py-1">درباره ما</a>
+                    <a href="/home/services" className="hover:text-blue-500 px-2 py-1">خدمات</a>
+                    <a href="/home/dentists" className="hover:text-blue-500 px-2 py-1">دندانپزشکان</a>
+                    <a href="/home/about" className="hover:text-blue-500 px-2 py-1">درباره ما</a>
                     <a href="/dashboard/" className="hover:text-blue-500 px-2 py-1">داشبورد</a>
                 </nav>
 
@@ -19,7 +19,7 @@ const Header = ({ }) => {
                     {/* <a href="/login" className="text-gray-700 hover:text-blue-500 px-2 py-1">ورود</a>
                     <a href="/register" className="text-gray-700 hover:text-blue-500 px-2 py-1">ثبت نام</a> */}
                     <a
-                        href="/dashboard/appointment"
+                        href="/dashboard/appointment/new"
                         className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200"
                     >
                         نوبت دهی اینترنتی
