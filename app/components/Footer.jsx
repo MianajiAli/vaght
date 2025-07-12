@@ -25,27 +25,26 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Quick Links */}
+                    {/* Quick Links - Updated to match header */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-bold text-blue-300">لینک‌های سریع</h3>
                         <ul className="space-y-2">
-                            <li><a href="/" className="text-gray-300 hover:text-white">صفحه اصلی</a></li>
-                            <li><a href="/services" className="text-gray-300 hover:text-white">خدمات</a></li>
-                            <li><a href="/dentists" className="text-gray-300 hover:text-white">دندانپزشکان</a></li>
-                            <li><a href="/about" className="text-gray-300 hover:text-white">درباره ما</a></li>
-                            <li><a href="/contact" className="text-gray-300 hover:text-white">تماس با ما</a></li>
+                            <li><a href="/" className="text-gray-300 hover:text-white">خانه</a></li>
+                            <li><a href="/home/services" className="text-gray-300 hover:text-white">خدمات</a></li>
+                            <li><a href="/home/dentists" className="text-gray-300 hover:text-white">دندانپزشکان</a></li>
+                            <li><a href="/home/about" className="text-gray-300 hover:text-white">درباره ما</a></li>
+                            <li><a href="/dashboard/" className="text-gray-300 hover:text-white">داشبورد</a></li>
                         </ul>
                     </div>
 
-                    {/* Services */}
+                    {/* Services - Updated to match your services data */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-bold text-blue-300">خدمات</h3>
                         <ul className="space-y-2">
-                            <li><a href="#" className="text-gray-300 hover:text-white">لمینت دندان</a></li>
-                            <li><a href="#" className="text-gray-300 hover:text-white">ایمپلنت</a></li>
-                            <li><a href="#" className="text-gray-300 hover:text-white">ارتودنسی</a></li>
-                            <li><a href="#" className="text-gray-300 hover:text-white">جرمگیری</a></li>
-                            <li><a href="#" className="text-gray-300 hover:text-white">عصب کشی</a></li>
+                            <li><a href="/home/services#serv_001" className="text-gray-300 hover:text-white">لمینت سرامیکی دندان</a></li>
+                            <li><a href="/home/services#serv_002" className="text-gray-300 hover:text-white">ایمپلنت دندان</a></li>
+                            <li><a href="/home/services#serv_003" className="text-gray-300 hover:text-white">جرمگیری حرفه‌ای</a></li>
+                            <li><a href="/home/services" className="text-gray-300 hover:text-white">مشاهده همه خدمات</a></li>
                         </ul>
                     </div>
 
