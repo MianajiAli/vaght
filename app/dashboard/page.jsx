@@ -6,6 +6,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosInstance";
 
+// Helper function to translate status to Persian
+const translateStatus = (status) => {
+    switch (status) {
+        case 'pending':
+            return 'در انتظار';
+        case 'confirmed':
+            return 'تایید شده';
+        case 'cancelled':
+            return 'لغو شده';
+        case 'done':
+            return 'تکمیل شده';
+        default:
+            return status;
+    }
+};
+
 const UserDashboard = () => {
     const { user, logout } = useAuth();
     const router = useRouter();
@@ -14,13 +30,17 @@ const UserDashboard = () => {
     const [loadingAppointments, setLoadingAppointments] = useState(true);
     const [loadingRecords, setLoadingRecords] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [appointmentDetails, setAppointmentDetails] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Fetch upcoming appointments from API
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
                 const response = await axiosInstance.get('/api/appointments/appointments/');
-                console.log(1, response.data)
                 setUpcomingAppointments(response.data.map(appointment => ({
                     id: appointment.id,
                     date: new Date(appointment.date).toLocaleDateString('fa-IR'),
@@ -63,6 +83,68 @@ const UserDashboard = () => {
         const { success } = await logout();
         if (success) {
             router.push("/");
+        }
+    };
+
+    const openDeleteModal = (appointment) => {
+        setSelectedAppointment(appointment);
+        setIsDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setSelectedAppointment(null);
+    };
+
+    const openDetailsModal = async (appointmentId) => {
+        try {
+            const response = await axiosInstance.get(`/api/appointments/appointments/${appointmentId}/`);
+            setAppointmentDetails(response.data);
+            setIsDetailsModalOpen(true);
+        } catch (err) {
+            setError('خطا در دریافت جزئیات نوبت');
+            console.error('Error fetching appointment details:', err);
+        }
+    };
+
+    const closeDetailsModal = () => {
+        setIsDetailsModalOpen(false);
+        setAppointmentDetails(null);
+    };
+
+    const handleDeleteAppointment = async () => {
+        if (!selectedAppointment) return;
+
+        setIsDeleting(true);
+        try {
+            // First get current appointment data
+            const currentData = await axiosInstance.get(
+                `/api/appointments/appointments/${selectedAppointment.id}/`
+            );
+
+            // Prepare updated data with status changed
+            const updatedData = {
+                ...currentData.data,
+                status: "cancelled"
+            };
+
+            // Send PUT request with full updated data
+            const response = await axiosInstance.delete(
+                `/api/appointments/appointments/${selectedAppointment.id}/`);
+
+            // Update local state
+            setUpcomingAppointments(upcomingAppointments.map(app =>
+                app.id === selectedAppointment.id
+                    ? { ...app, status: "cancelled" }
+                    : app
+            ));
+
+            closeDeleteModal();
+        } catch (err) {
+            setError('خطا در لغو نوبت');
+            console.error('Error cancelling appointment:', err);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -177,22 +259,33 @@ const UserDashboard = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 <span
-                                                    className={`px-2 py-1 rounded-full text-xs ${appointment.status === "تایید شده"
+                                                    className={`px-2 py-1 rounded-full text-xs ${appointment.status === "confirmed"
                                                         ? "bg-green-100 text-green-800"
-                                                        : "bg-yellow-100 text-yellow-800"
+                                                        : appointment.status === "cancelled"
+                                                            ? "bg-red-100 text-red-800"
+                                                            : appointment.status === "done"
+                                                                ? "bg-blue-100 text-blue-800"
+                                                                : "bg-yellow-100 text-yellow-800"
                                                         }`}
                                                 >
-                                                    {appointment.status}
+                                                    {translateStatus(appointment.status)}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <Link
-                                                    href={`/appointments/${appointment.id}`}
+                                                <button
+                                                    onClick={() => openDetailsModal(appointment.id)}
+                                                    disabled={['cancelled'].includes(appointment.status)}
+
                                                     className="text-blue-600 hover:text-blue-900 ml-2"
                                                 >
                                                     جزییات
-                                                </Link>
-                                                <button className="text-red-600 hover:text-red-900">
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteModal(appointment)}
+                                                    disabled={['cancelled', 'done'].includes(appointment.status)}
+                                                    className={`text-red-600 hover:text-red-900 mr-2 ${['cancelled', 'done'].includes(appointment.status) ? "opacity-50 cursor-not-allowed" : ""
+                                                        }`}
+                                                >
                                                     لغو
                                                 </button>
                                             </td>
@@ -289,6 +382,119 @@ const UserDashboard = () => {
                     </Link>
                 </div>
             </main>
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50" onClick={closeDeleteModal}>
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                            لغو نوبت
+                        </h3>
+                        <p className="text-gray-600 mb-6">
+                            آیا مطمئن هستید که می‌خواهید نوبت {selectedAppointment?.service} در تاریخ {selectedAppointment?.date} را لغو کنید؟
+                            {selectedAppointment?.status === "cancelled" && (
+                                <span className="block text-red-500 mt-2">این نوبت قبلاً لغو شده است</span>
+                            )}
+                            {selectedAppointment?.status === "done" && (
+                                <span className="block text-red-500 mt-2">نوبت‌های تکمیل شده قابل لغو نیستند</span>
+                            )}
+                        </p>
+                        <div className="flex justify-end space-x-3 space-x-reverse">
+                            <button
+                                onClick={closeDeleteModal}
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                            >
+                                انصراف
+                            </button>
+                            <button
+                                onClick={handleDeleteAppointment}
+                                disabled={isDeleting || ['cancelled', 'done'].includes(selectedAppointment?.status)}
+                                className={`px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 ${isDeleting ? 'opacity-70' : ''
+                                    } ${['cancelled', 'done'].includes(selectedAppointment?.status) ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : ''
+                                    }`}
+                            >
+                                {isDeleting ? 'در حال لغو...' : 'لغو نوبت'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Appointment Details Modal */}
+            {isDetailsModalOpen && appointmentDetails && (
+                <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center z-50" onClick={closeDetailsModal}>
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-between items-start mb-4">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                جزئیات نوبت
+                            </h3>
+                            <button
+                                onClick={closeDetailsModal}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                &times;
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-500">خدمت</h4>
+                                <p className="mt-1 text-sm text-gray-900">
+                                    {appointmentDetails.description || 'معاینه عمومی'}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-500">تاریخ و زمان</h4>
+                                <p className="mt-1 text-sm text-gray-900">
+                                    {new Date(appointmentDetails.date).toLocaleDateString('fa-IR')} - {appointmentDetails.time}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-500">پزشک</h4>
+                                <p className="mt-1 text-sm text-gray-900">
+                                    {appointmentDetails.doctor_name || appointmentDetails.doctor || "تعریف نشده"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-500">وضعیت</h4>
+                                <p className="mt-1 text-sm text-gray-900">
+                                    <span className={`px-2 py-1 rounded-full text-xs ${appointmentDetails.status === "confirmed"
+                                        ? "bg-green-100 text-green-800"
+                                        : appointmentDetails.status === "cancelled"
+                                            ? "bg-red-100 text-red-800"
+                                            : appointmentDetails.status === "done"
+                                                ? "bg-blue-100 text-blue-800"
+                                                : "bg-yellow-100 text-yellow-800"
+                                        }`}>
+                                        {translateStatus(appointmentDetails.status)}
+                                    </span>
+                                </p>
+                            </div>
+
+                            {appointmentDetails.notes && (
+                                <div>
+                                    <h4 className="text-sm font-medium text-gray-500">توضیحات</h4>
+                                    <p className="mt-1 text-sm text-gray-900">
+                                        {appointmentDetails.notes}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <button
+                                onClick={closeDetailsModal}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                بستن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
