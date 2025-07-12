@@ -29,7 +29,7 @@ const AboutPage = () => {
                     </div>
                     <div className="rounded-lg overflow-hidden shadow-lg">
                         <img
-                            src="/images/clinic-building.jpg"
+                            src="/images/clinic-interior.jpg"
                             alt="ساختمان کلینیک دندانپزشکی لبخند"
                             className="w-full h-auto object-cover"
                         />
