@@ -6,9 +6,8 @@ import { motion } from "framer-motion";
 import { FaTooth, FaSmile, FaClinicMedical, FaCalendarAlt, FaPhoneAlt, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { GiTooth } from "react-icons/gi";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-// import { GiTooth } from "react-icons/bs";
 
-// Constants moved to separate files would be better in production
+// Services data
 const SERVICES = [
   {
     title: "لمینت و کامپوزیت دندان",
@@ -98,6 +97,27 @@ const TESTIMONIALS = [
   }
 ];
 
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeInLeft = {
+  hidden: { opacity: 0, x: -30 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeInRight = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const scaleUp = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col" dir="rtl">
@@ -106,25 +126,39 @@ export default function Home() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-blue-50 to-cyan-50 py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-blue-100 to-transparent"></div>
-          </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center relative z-10 gap-8">
             <div className="md:w-1/2 space-y-6">
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{
+                  duration: 0.8,
+                  ease: [0.16, 0.77, 0.47, 0.97]
+                }}
                 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight"
               >
                 کلینیک تخصصی دندانپزشکی <span className="text-blue-600">پارس دنتال</span>
               </motion.h1>
 
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2,
+                  ease: "easeOut"
+                }}
+                className="text-lg text-gray-600 leading-relaxed"
+              >
                 ارائه خدمات تخصصی دندانپزشکی با استانداردهای جهانی و کادری مجرب در محیطی کاملا استریل و مجهز به پیشرفته‌ترین دستگاه‌های روز دنیا
-              </p>
+              </motion.p>
 
-              <div className="flex flex-wrap gap-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex flex-wrap gap-4"
+              >
                 <motion.a
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -143,53 +177,45 @@ export default function Home() {
                   <FaPhoneAlt />
                   تماس با ما
                 </motion.a>
-              </div>
-
-              <div className="flex flex-wrap gap-6 pt-4">
-                <div className="flex items-center gap-2">
-                  <div className="bg-blue-100 p-2 rounded-full">
-                    <FaSmile className="text-blue-600 text-xl" />
-                  </div>
-                  <span className="text-gray-700">بیش از ۱۰,۰۰۰ بیمار راضی</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="bg-blue-100 p-2 rounded-full">
-                    <FaClinicMedical className="text-blue-600 text-xl" />
-                  </div>
-                  <span className="text-gray-700">۲۰ سال سابقه درخشان</span>
-                </div>
-              </div>
+              </motion.div>
             </div>
 
-            <div className="md:w-1/2 mt-8 md:mt-0 relative">
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.3,
+                ease: [0.16, 0.77, 0.47, 0.97]
+              }}
+              className="md:w-1/2 mt-8 md:mt-0 relative"
+            >
+              <Image
+                src="/images/dental-hero.jpg"
+                alt="دندانپزشک در حال معاینه بیمار"
+                width={600}
+                height={500}
+                className="rounded-xl shadow-2xl border-8 border-white"
+                priority
+                quality={90}
+              />
               <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg border border-gray-100"
               >
-                <Image
-                  src="/images/dental-hero.jpg"
-                  alt="دندانپزشک در حال معاینه بیمار"
-                  width={600}
-                  height={500}
-                  className="rounded-xl shadow-2xl border-8 border-white"
-                  priority
-                  quality={90}
-                />
-                <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-blue-100 p-3 rounded-full">
-                      <GiTooth className="text-blue-600 text-2xl" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">۱۲ متخصص مجرب</p>
-                      <p className="text-sm text-gray-600">در رشته‌های مختلف دندانپزشکی</p>
-                    </div>
+                <div className="flex items-center gap-2">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <GiTooth className="text-blue-600 text-2xl" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800">۱۲ متخصص مجرب</p>
+                    <p className="text-sm text-gray-600">در رشته‌های مختلف دندانپزشکی</p>
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -197,49 +223,38 @@ export default function Home() {
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="bg-blue-50 p-6 rounded-xl text-center"
-              >
-                <div className="text-4xl font-bold text-blue-600 mb-2">۲۰+</div>
-                <p className="text-gray-700">سال تجربه</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="bg-green-50 p-6 rounded-xl text-center"
-              >
-                <div className="text-4xl font-bold text-green-600 mb-2">۱۲</div>
-                <p className="text-gray-700">متخصص مجرب</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-purple-50 p-6 rounded-xl text-center"
-              >
-                <div className="text-4xl font-bold text-purple-600 mb-2">۱۰,۰۰۰+</div>
-                <p className="text-gray-700">بیمار راضی</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="bg-amber-50 p-6 rounded-xl text-center"
-              >
-                <div className="text-4xl font-bold text-amber-600 mb-2">۵۰+</div>
-                <p className="text-gray-700">خدمات تخصصی</p>
-              </motion.div>
+              {[0, 1, 2, 3].map((index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.15,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className={`p-6 rounded-xl text-center ${
+                    index === 0 ? 'bg-blue-50' :
+                    index === 1 ? 'bg-green-50' :
+                    index === 2 ? 'bg-purple-50' : 'bg-amber-50'
+                  }`}
+                >
+                  <div className={`text-4xl font-bold mb-2 ${
+                    index === 0 ? 'text-blue-600' :
+                    index === 1 ? 'text-green-600' :
+                    index === 2 ? 'text-purple-600' : 'text-amber-600'
+                  }`}>
+                    {index === 0 ? '۲۰+' : index === 1 ? '۱۲' : index === 2 ? '۱۰,۰۰۰+' : '۵۰+'}
+                  </div>
+                  <p className="text-gray-700">
+                    {index === 0 ? 'سال تجربه' :
+                     index === 1 ? 'متخصص مجرب' :
+                     index === 2 ? 'بیمار راضی' : 'خدمات تخصصی'}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
@@ -272,11 +287,19 @@ export default function Home() {
               {SERVICES.map((service, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                  variants={fadeInUp}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: [0.16, 0.77, 0.47, 0.97]
+                  }}
+                  whileHover={{
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
                   className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all border border-gray-100 overflow-hidden group"
                 >
                   <div className={`${service.color} p-3 rounded-lg inline-flex mb-6`}>
@@ -315,9 +338,10 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
+                variants={fadeInLeft}
                 transition={{ duration: 0.8 }}
                 className="lg:w-1/2 relative"
               >
@@ -329,16 +353,23 @@ export default function Home() {
                   className="rounded-2xl shadow-xl border-8 border-white"
                   quality={90}
                 />
-                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-lg border border-gray-100 max-w-xs">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-lg border border-gray-100 max-w-xs"
+                >
                   <h4 className="font-bold text-gray-800 mb-2">چرا کلینیک پارس دنتال؟</h4>
                   <p className="text-sm text-gray-600">اولین مرکز تخصصی دندانپزشکی دارای گواهینامه ISO 9001 در ایران</p>
-                </div>
+                </motion.div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
+                variants={fadeInRight}
                 transition={{ duration: 0.8 }}
                 className="lg:w-1/2"
               >
@@ -394,18 +425,39 @@ export default function Home() {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">متخصصین <span className="text-blue-600">کلینیک پارس دنتال</span></h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">کادر درمانی مجرب و متخصص ما آماده خدمت‌رسانی به شما عزیزان هستند</p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-3xl font-bold text-gray-800 mb-4"
+              >
+                متخصصین <span className="text-blue-600">کلینیک پارس دنتال</span>
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-lg text-gray-600 max-w-3xl mx-auto"
+              >
+                کادر درمانی مجرب و متخصص ما آماده خدمت‌رسانی به شما عزیزان هستند
+              </motion.p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[1, 2, 3, 4].map((_, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                  variants={scaleUp}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
                   className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all"
                 >
                   <div className="relative h-64">
@@ -452,18 +504,39 @@ export default function Home() {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">تجربه <span className="text-blue-600">مراجعین ما</span></h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">نظرات بیمارانی که از خدمات کلینیک پارس دنتال استفاده کرده‌اند</p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-3xl font-bold text-gray-800 mb-4"
+              >
+                تجربه <span className="text-blue-600">مراجعین ما</span>
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-lg text-gray-600 max-w-3xl mx-auto"
+              >
+                نظرات بیمارانی که از خدمات کلینیک پارس دنتال استفاده کرده‌اند
+              </motion.p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {TESTIMONIALS.map((testimonial, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                  variants={fadeInUp}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
                   className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-lg transition-all"
                 >
                   <div className="flex items-center mb-4">
@@ -496,10 +569,11 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
+                variants={fadeInUp}
+                transition={{ duration: 0.6 }}
                 className="bg-blue-50 p-8 rounded-xl"
               >
                 <div className="flex items-center gap-4 mb-4">
@@ -514,10 +588,11 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                variants={fadeInUp}
+                transition={{ duration: 0.6, delay: 0.1 }}
                 className="bg-green-50 p-8 rounded-xl"
               >
                 <div className="flex items-center gap-4 mb-4">
@@ -532,10 +607,11 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                variants={fadeInUp}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 className="bg-purple-50 p-8 rounded-xl"
               >
                 <div className="flex items-center gap-4 mb-4">

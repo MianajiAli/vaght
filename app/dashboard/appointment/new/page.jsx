@@ -25,7 +25,7 @@ const AppointmentBookingPage = () => {
             "category": "زیبایی",
             "duration": 60,
             "price": 5000000,
-            "doctors": ["doc_001", "doc_003"],
+            "doctors": ["doc_001", "doc_003", "doc_005"],
             "image": "/images/services/laminate.jpg",
             "popular": true
         },
@@ -36,7 +36,7 @@ const AppointmentBookingPage = () => {
             "category": "جراحی",
             "duration": 90,
             "price": 15000000,
-            "doctors": ["doc_002", "doc_004"],
+            "doctors": ["doc_002", "doc_004", "doc_006"],
             "image": "/images/services/implant.jpg",
             "popular": true
         },
@@ -47,40 +47,213 @@ const AppointmentBookingPage = () => {
             "category": "پیشگیری",
             "duration": 30,
             "price": 800000,
-            "doctors": ["doc_001", "doc_002", "doc_003"],
+            "doctors": ["doc_001", "doc_002", "doc_003", "doc_005"],
             "image": "/images/services/cleaning.jpg"
+        },
+        {
+            "id": "serv_004",
+            "name": "ارتودنسی ثابت",
+            "description": "درمان ناهنجاری های دندان و فک با براکت های ثابت",
+            "category": "ارتودنسی",
+            "duration": 45,
+            "price": 10000000,
+            "doctors": ["doc_003", "doc_006"],
+            "image": "/images/services/orthodontics.jpg",
+            "popular": true
+        },
+        {
+            "id": "serv_005",
+            "name": "عصب کشی",
+            "description": "درمان ریشه دندان برای حفظ دندان های آسیب دیده",
+            "category": "درمانی",
+            "duration": 60,
+            "price": 3500000,
+            "doctors": ["doc_001", "doc_004", "doc_005"],
+            "image": "/images/services/root-canal.jpg"
         }
     ]);
-    const [doctors, setDoctors] = useState([{
-        "id": "doc_001",
-        "name": "دکتر مریم محمدی",
-        "services": ["serv_001", "serv_003"],
-        "specialty": "متخصص زیبایی دندان",
-        "bio": "Optional biography text",
-        "image": "/images/doctors/dr-mohammadi.jpg",
-        "workHours": [
-            {
-                "day": "saturday",
-                "start": 9.5,
-                "end": 13
-            },
-            {
-                "day": "sunday",
-                "start": 16,
-                "end": 20
-            },
-            {
-                "day": "monday",
-                "start": 9.5,
-                "end": 20
-            },
-            {
-                "day": "thursday",
-                "start": 16,
-                "end": 20
-            }
-        ]
-    }]);
+    const [doctors, setDoctors] = useState([
+        {
+            "id": "doc_001",
+            "name": "دکتر مریم محمدی",
+            "services": ["serv_001", "serv_003", "serv_005"],
+            "specialty": "متخصص زیبایی دندان",
+            "bio": "فارغ التحصیل از دانشگاه علوم پزشکی تهران با 10 سال سابقه کار در زمینه دندانپزشکی زیبایی",
+            "image": "/images/doctors/dr-mohammadi.jpg",
+            "workHours": [
+                {
+                    "day": "saturday",
+                    "start": 9.5,
+                    "end": 13
+                },
+                {
+                    "day": "sunday",
+                    "start": 16,
+                    "end": 20
+                },
+                {
+                    "day": "monday",
+                    "start": 9.5,
+                    "end": 20
+                },
+                {
+                    "day": "thursday",
+                    "start": 16,
+                    "end": 20
+                }
+            ]
+        },
+        {
+            "id": "doc_002",
+            "name": "دکتر علی رضایی",
+            "services": ["serv_002", "serv_003"],
+            "specialty": "جراح دندانپزشک",
+            "bio": "متخصص جراحی دهان و فک و صورت با 15 سال تجربه در زمینه ایمپلنت و جراحی های پیچیده",
+            "image": "/images/doctors/dr-rezaei.jpg",
+            "workHours": [
+                {
+                    "day": "saturday",
+                    "start": 14,
+                    "end": 20
+                },
+                {
+                    "day": "sunday",
+                    "start": 9,
+                    "end": 14
+                },
+                {
+                    "day": "tuesday",
+                    "start": 9,
+                    "end": 17
+                },
+                {
+                    "day": "wednesday",
+                    "start": 9,
+                    "end": 13
+                }
+            ]
+        },
+        {
+            "id": "doc_003",
+            "name": "دکتر سارا حسینی",
+            "services": ["serv_001", "serv_003", "serv_004"],
+            "specialty": "متخصص ارتودنسی",
+            "bio": "متخصص ارتودنسی و ناهنجاری های فک با تخصص از دانشگاه علوم پزشکی شیراز",
+            "image": "/images/doctors/dr-hosseini.jpg",
+            "workHours": [
+                {
+                    "day": "saturday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "monday",
+                    "start": 14,
+                    "end": 20
+                },
+                {
+                    "day": "tuesday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "wednesday",
+                    "start": 14,
+                    "end": 20
+                }
+            ]
+        },
+        {
+            "id": "doc_004",
+            "name": "دکتر رضا کریمی",
+            "services": ["serv_002", "serv_005"],
+            "specialty": "متخصص درمان ریشه",
+            "bio": "متخصص اندودنتیکس با تجربه در درمان های پیچیده ریشه دندان",
+            "image": "/images/doctors/dr-karimi.jpg",
+            "workHours": [
+                {
+                    "day": "sunday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "monday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "tuesday",
+                    "start": 16,
+                    "end": 20
+                },
+                {
+                    "day": "thursday",
+                    "start": 8,
+                    "end": 14
+                }
+            ]
+        },
+        {
+            "id": "doc_005",
+            "name": "دکتر نازنین صادقی",
+            "services": ["serv_001", "serv_003", "serv_005"],
+            "specialty": "دندانپزشک عمومی",
+            "bio": "دندانپزشک عمومی با 8 سال سابقه کار در زمینه ترمیم و زیبایی دندان",
+            "image": "/images/doctors/dr-sadeghi.jpg",
+            "workHours": [
+                {
+                    "day": "saturday",
+                    "start": 14,
+                    "end": 20
+                },
+                {
+                    "day": "sunday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "wednesday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "thursday",
+                    "start": 14,
+                    "end": 20
+                }
+            ]
+        },
+        {
+            "id": "doc_006",
+            "name": "دکتر امیرحسین نجفی",
+            "services": ["serv_002", "serv_004"],
+            "specialty": "متخصص ارتودنسی و ایمپلنت",
+            "bio": "ترکیب تخصص ارتودنسی و ایمپلنت برای درمان های جامع دندانپزشکی",
+            "image": "/images/doctors/dr-najafi.jpg",
+            "workHours": [
+                {
+                    "day": "saturday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "monday",
+                    "start": 16,
+                    "end": 20
+                },
+                {
+                    "day": "tuesday",
+                    "start": 8,
+                    "end": 14
+                },
+                {
+                    "day": "thursday",
+                    "start": 8,
+                    "end": 14
+                }
+            ]
+        }
+    ]);
     const [availableDates, setAvailableDates] = useState([]);
     const [availableTimes, setAvailableTimes] = useState([]);
     const [bookedAppointments, setBookedAppointments] = useState([]);
@@ -266,23 +439,30 @@ const AppointmentBookingPage = () => {
                 );
             case 3:
                 return (
-                    <DateTimeSelection
+                    <DateSelection
                         dates={availableDates}
-                        times={generateTimeSlots()}
                         selectedDate={selectedDate}
-                        selectedTime={selectedTime}
                         onSelectDate={setSelectedDate}
-                        onSelectTime={setSelectedTime}
                         onBack={() => setStep(2)}
                         onNext={() => setStep(4)}
                     />
                 );
             case 4:
                 return (
+                    <TimeSelection
+                        times={generateTimeSlots()}
+                        selectedTime={selectedTime}
+                        onSelectTime={setSelectedTime}
+                        onBack={() => setStep(3)}
+                        onNext={() => setStep(5)}
+                    />
+                );
+            case 5:
+                return (
                     <PatientInfoForm
                         data={patientInfo}
                         onChange={setPatientInfo}
-                        onBack={() => setStep(3)}
+                        onBack={() => setStep(4)}
                         onSubmit={handleSubmit}
                         loading={loading}
                         selectedService={selectedService}
@@ -302,7 +482,7 @@ const AppointmentBookingPage = () => {
                 {/* Progress Bar */}
                 <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
                     <div className="flex justify-between mb-3">
-                        {['انتخاب خدمت', 'انتخاب پزشک', 'زمان مراجعه', 'تکمیل اطلاعات'].map((label, index) => (
+                        {['انتخاب خدمت', 'انتخاب پزشک', 'انتخاب تاریخ', 'انتخاب ساعت', 'تکمیل اطلاعات'].map((label, index) => (
                             <div
                                 key={index}
                                 className={`text-sm ${step > index + 1 ? 'text-blue-600' : step === index + 1 ? 'font-bold text-gray-800' : 'text-gray-400'}`}
@@ -314,7 +494,7 @@ const AppointmentBookingPage = () => {
                     <div className="bg-gray-200 h-2 rounded-full overflow-hidden">
                         <div
                             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${((step - 1) / 3) * 100}%` }}
+                            style={{ width: `${((step - 1) / 4) * 100}%` }}
                         />
                     </div>
                 </div>
@@ -356,6 +536,11 @@ const ServiceSelection = ({ services, selectedService, onSelect, onNext }) => (
                     <h3 className="font-medium text-gray-800">{service.name}</h3>
                     <p className="text-sm text-gray-600 mt-1">{service.description}</p>
                     <p className="text-sm text-blue-600 mt-2">{service.duration} دقیقه - {service.price.toLocaleString()} تومان</p>
+                    {service.popular && (
+                        <span className="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                            پرطرفدار
+                        </span>
+                    )}
                 </div>
             ))}
         </div>
@@ -393,6 +578,11 @@ const DoctorSelection = ({ doctors, selectedDoctor, onSelect, onBack, onNext }) 
                         </div>
                     </div>
                     <p className="text-sm text-gray-600 mt-3">{doctor.bio?.substring(0, 80)}...</p>
+                    <div className="mt-2">
+                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                            {doctor.workHours.length} روز در هفته
+                        </span>
+                    </div>
                 </div>
             ))}
         </div>
@@ -414,12 +604,11 @@ const DoctorSelection = ({ doctors, selectedDoctor, onSelect, onBack, onNext }) 
     </div>
 );
 
-const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectDate, onSelectTime, onBack, onNext }) => (
+const DateSelection = ({ dates, selectedDate, onSelectDate, onBack, onNext }) => (
     <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">لطفا زمان مراجعه را انتخاب کنید</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-6">لطفا تاریخ مراجعه را انتخاب کنید</h2>
 
         <div className="mb-8">
-            <h3 className="font-medium text-gray-700 mb-3">تاریخ:</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                 {dates.map(date => (
                     <button
@@ -443,26 +632,47 @@ const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectD
             </div>
         </div>
 
-        {selectedDate && selectedDate.available && (
-            <div className="mb-8">
-                <h3 className="font-medium text-gray-700 mb-3">ساعت:</h3>
-                {times.length > 0 ? (
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                        {times.map(time => (
-                            <button
-                                key={time}
-                                onClick={() => onSelectTime(time)}
-                                className={`py-2 rounded-lg border ${selectedTime === time ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 hover:border-blue-300'}`}
-                            >
-                                {time}
-                            </button>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="text-gray-500">هیچ زمان خالی برای این تاریخ وجود ندارد</p>
-                )}
-            </div>
-        )}
+        <div className="mt-8 flex justify-between">
+            <button
+                onClick={onBack}
+                className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+            >
+                بازگشت
+            </button>
+            <button
+                onClick={onNext}
+                disabled={!selectedDate || !selectedDate.available}
+                className={`px-6 py-2 rounded-lg ${selectedDate && selectedDate.available ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            >
+                مرحله بعد
+            </button>
+        </div>
+    </div>
+);
+
+const TimeSelection = ({ times, selectedTime, onSelectTime, onBack, onNext }) => (
+    <div className="p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-6">لطفا ساعت مراجعه را انتخاب کنید</h2>
+
+        <div className="mb-8">
+            {times.length > 0 ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                    {times.map(time => (
+                        <button
+                            key={time}
+                            onClick={() => onSelectTime(time)}
+                            className={`py-2 rounded-lg border ${selectedTime === time ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 hover:border-blue-300'}`}
+                        >
+                            {time}
+                        </button>
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
+                    <p>هیچ زمان خالی برای این تاریخ وجود ندارد. لطفا تاریخ دیگری را انتخاب کنید.</p>
+                </div>
+            )}
+        </div>
 
         <div className="mt-8 flex justify-between">
             <button
@@ -473,8 +683,8 @@ const DateTimeSelection = ({ dates, times, selectedDate, selectedTime, onSelectD
             </button>
             <button
                 onClick={onNext}
-                disabled={!selectedDate || !selectedTime || !selectedDate.available}
-                className={`px-6 py-2 rounded-lg ${selectedDate && selectedTime && selectedDate.available ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                disabled={!selectedTime}
+                className={`px-6 py-2 rounded-lg ${selectedTime ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
                 مرحله بعد
             </button>
@@ -561,11 +771,13 @@ const PatientInfoForm = ({
                                 <span className="text-gray-600">پزشک:</span>
                                 <span className="font-medium">{selectedDoctor?.name}</span>
                             </div>
+                            <div className="flex justify-between py-2 border-b border-gray-200">
+                                <span className="text-gray-600">تاریخ:</span>
+                                <span className="font-medium">{selectedDate?.jalali}</span>
+                            </div>
                             <div className="flex justify-between py-2">
-                                <span className="text-gray-600">زمان:</span>
-                                <span className="font-medium">
-                                    {selectedDate?.jalali} - {selectedTime}
-                                </span>
+                                <span className="text-gray-600">ساعت:</span>
+                                <span className="font-medium">{selectedTime}</span>
                             </div>
                         </div>
                     </div>
